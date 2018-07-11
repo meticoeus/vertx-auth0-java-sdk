@@ -112,7 +112,6 @@ public class Auth0HttpClient {
                 } else {
                     result = new JsonObject();
                 }
-                result.put("statusCode", response.statusCode());
 
                 if (response.statusCode() >= 200 && response.statusCode() < 400) {
                     handler.handle(Future.succeededFuture(result));
