@@ -64,7 +64,20 @@ public class Auth0HttpClient {
                             handler.handle(Future.failedFuture(new RequestException("Failed to log in user", t)))
                     );
 
-                    response.bodyHandler(buffer -> handler.handle(Future.succeededFuture(new JsonObject(buffer.toString()))));
+                    response.bodyHandler(buffer -> {
+                        try {
+                            JsonObject result;
+                            if (buffer.length() > 0) {
+                                result = new JsonObject(buffer.toString());
+                            } else {
+                                result = new JsonObject();
+                            }
+                            handler.handle(Future.succeededFuture(result));
+
+                        } catch (Throwable t) {
+                            handler.handle(Future.failedFuture(new RequestException("Failed to parse login response. Received: '" + (buffer == null ? "null" : buffer.toString()) + "'", t)));
+                        }
+                    });
                 } catch (Throwable t) {
                     handler.handle(Future.failedFuture(new RequestException("Failed to log in user. Error binding request handlers.", t)));
                 }
