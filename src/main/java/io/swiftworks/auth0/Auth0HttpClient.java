@@ -108,7 +108,7 @@ public class Auth0HttpClient {
             try {
                 JsonObject result;
                 if (buffer.length() > 0) {
-                    result = JsonUtils.toCamelCase(new JsonObject(buffer.toString()));
+                    result = JsonUtils.toCamelCase(new JsonObject(buffer.toString("UTF-8")));
                 } else {
                     result = new JsonObject();
                 }
