@@ -12,12 +12,12 @@ import io.vertx.core.json.JsonObject;
 public class Auth0HttpClient {
     private static final String AUTH0_FORWARDED_FOR = "auth0-forwarded-for";
 
-    private final String audience;
-    private final String clientId;
-    private final String clientSecret;
-    private final String apiUrl;
-    private final Vertx vertx;
-    private HttpClient httpClient;
+    protected final String audience;
+    protected final String clientId;
+    protected final String clientSecret;
+    protected final String apiUrl;
+    protected final Vertx vertx;
+    protected HttpClient httpClient;
 
     public Auth0HttpClient(String audience, String clientId, String clientSecret, String apiUrl, Vertx vertx) {
         this.audience = audience;
