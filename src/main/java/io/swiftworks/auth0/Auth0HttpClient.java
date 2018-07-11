@@ -74,6 +74,21 @@ public class Auth0HttpClient {
         }
     }
 
+    public void getProfile(String accessToken, Handler<AsyncResult<JsonObject>> handler) {
+        try {
+            String url = this.apiUrl + "/userinfo";
+
+            HttpClientRequest request = this.httpClient.getAbs(url, buildResponseHandler(handler,"Failed to retrieve user profile."));
+
+            request.exceptionHandler(buildExceptionHandler(handler));
+
+            request.putHeader(AUTHORIZATION, "Bearer " + accessToken)
+                    .end();
+        } catch (Throwable t) {
+            handler.handle(Future.failedFuture(new RequestException("Failed to send request", t)));
+        }
+    }
+
     private Handler<HttpClientResponse> buildResponseHandler(Handler<AsyncResult<JsonObject>> handler, String errorMessage) {
         return response -> {
             try {
