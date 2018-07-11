@@ -74,7 +74,7 @@ public class Auth0HttpClient {
                     handler.handle(Future.failedFuture(new RequestException("Failed to log in user", t)))
             );
 
-            request.putHeader(AUTH0_FORWARDED_FOR, loginUserRequest.getHost())
+            request.putHeader(AUTH0_FORWARDED_FOR, loginUserRequest.getIpAddress())
                     .putHeader("content-type", "application/json")
                     .end(requestBody.toString());
         } catch (Throwable t) {

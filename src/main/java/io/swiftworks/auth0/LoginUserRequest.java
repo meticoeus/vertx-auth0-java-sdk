@@ -4,7 +4,7 @@ public class LoginUserRequest {
     private String username;
     private String password;
     private String scope;
-    private String host;
+    private String ipAddress;
 
     public LoginUserRequest() {
     }
@@ -39,12 +39,12 @@ public class LoginUserRequest {
         return this;
     }
 
-    public String getHost() {
-        return host;
+    public String getIpAddress() {
+        return ipAddress;
     }
 
-    public LoginUserRequest setHost(String host) {
-        this.host = host;
+    public LoginUserRequest setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
 
         return this;
     }
