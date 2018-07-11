@@ -77,7 +77,7 @@ public class Auth0HttpClient {
                             if (response.statusCode() >= 200 && response.statusCode() < 400) {
                                 handler.handle(Future.succeededFuture(result));
                             } else {
-                                handler.handle(Future.failedFuture(new RequestException(result.toString(), response.statusCode())));
+                                handler.handle(Future.failedFuture(new RequestException(result, response.statusCode())));
                             }
 
                         } catch (Throwable t) {
