@@ -17,7 +17,7 @@ public class RequestException extends Exception {
     private static final long serialVersionUID = -3852834447530956514L;
 
     private int statusCode = 500;
-    private boolean isJson = false;
+    private JsonObject asJson;
 
     /**
      * Constructor.
@@ -32,7 +32,7 @@ public class RequestException extends Exception {
     public RequestException(JsonObject message, int statusCode) {
         super(message.toString());
         this.statusCode = statusCode;
-        this.isJson = true;
+        this.asJson = message;
     }
 
     /**
@@ -54,7 +54,7 @@ public class RequestException extends Exception {
         return statusCode;
     }
 
-    public boolean isJson() {
-        return isJson;
+    public JsonObject getAsJson() {
+        return asJson;
     }
 }
