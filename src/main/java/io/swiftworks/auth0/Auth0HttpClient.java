@@ -66,19 +66,19 @@ public class Auth0HttpClient {
 
                     response.bodyHandler(buffer -> handler.handle(Future.succeededFuture(new JsonObject(buffer.toString()))));
                 } catch (Throwable t) {
-                    handler.handle(Future.failedFuture(new RequestException("Failed to log in user", t)));
+                    handler.handle(Future.failedFuture(new RequestException("Failed to log in user. Error binding request handlers.", t)));
                 }
             });
 
             request.exceptionHandler(t ->
-                    handler.handle(Future.failedFuture(new RequestException("Failed to log in user", t)))
+                    handler.handle(Future.failedFuture(new RequestException("Failed to connect to server", t)))
             );
 
             request.putHeader(AUTH0_FORWARDED_FOR, loginUserRequest.getIpAddress())
                     .putHeader("content-type", "application/json")
                     .end(requestBody.toString());
         } catch (Throwable t) {
-            handler.handle(Future.failedFuture(new RequestException("Failed to log in user", t)));
+            handler.handle(Future.failedFuture(new RequestException("Failed to send request", t)));
         }
     }
 }

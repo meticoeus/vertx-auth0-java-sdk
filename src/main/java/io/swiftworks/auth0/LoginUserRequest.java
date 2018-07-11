@@ -13,14 +13,22 @@ public class LoginUserRequest {
         return username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
     public LoginUserRequest setUsername(String username) {
         this.username = username;
 
         return this;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public LoginUserRequest setPassword(String password) {
@@ -29,18 +37,10 @@ public class LoginUserRequest {
         return this;
     }
 
-    public String getScope() {
-        return scope;
-    }
-
     public LoginUserRequest setScope(String scope) {
         this.scope = scope;
 
         return this;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
     }
 
     public LoginUserRequest setIpAddress(String ipAddress) {
