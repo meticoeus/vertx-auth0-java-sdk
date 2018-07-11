@@ -14,6 +14,8 @@ public class RequestException extends Exception {
 
     private static final long serialVersionUID = -3852834447530956514L;
 
+    private int statusCode = 500;
+
     /**
      * Constructor.
      */
@@ -24,8 +26,24 @@ public class RequestException extends Exception {
     /**
      * Constructor.
      */
+    public RequestException(String message, int statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+
+    /**
+     * Constructor.
+     */
     public RequestException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    /**
+     * Constructor.
+     */
+    public RequestException(String message, int statusCode, Throwable cause) {
+        super(message, cause);
+        this.statusCode = statusCode;
     }
 
 }

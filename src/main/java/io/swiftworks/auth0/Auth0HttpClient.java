@@ -68,11 +68,17 @@ public class Auth0HttpClient {
                         try {
                             JsonObject result;
                             if (buffer.length() > 0) {
-                                result = new JsonObject(buffer.toString());
+                                result = JsonUtils.toCamelCase(new JsonObject(buffer.toString()));
                             } else {
                                 result = new JsonObject();
                             }
-                            handler.handle(Future.succeededFuture(result));
+                            result.put("statusCode", response.statusCode());
+
+                            if (response.statusCode() >= 200 && response.statusCode() < 400) {
+                                handler.handle(Future.succeededFuture(result));
+                            } else {
+                                handler.handle(Future.failedFuture(new RequestException(result.toString(), response.statusCode())));
+                            }
 
                         } catch (Throwable t) {
                             handler.handle(Future.failedFuture(new RequestException("Failed to parse login response. Received: '" + (buffer == null ? "null" : buffer.toString()) + "'", t)));
