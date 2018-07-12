@@ -106,7 +106,7 @@ public class Auth0HttpClient {
             request.exceptionHandler(buildExceptionHandler(handler));
 
             request.putHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
-                    .end();
+                    .end(requestBody.toString());
         } catch (Throwable t) {
             handler.handle(Future.failedFuture(new RequestException("Failed to send request", t)));
         }
