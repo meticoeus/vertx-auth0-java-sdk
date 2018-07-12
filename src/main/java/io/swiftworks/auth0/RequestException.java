@@ -29,6 +29,14 @@ public class RequestException extends Exception {
     /**
      * Constructor.
      */
+    public RequestException(String message, int statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+
+    /**
+     * Constructor.
+     */
     public RequestException(JsonObject message, int statusCode) {
         super(message.toString());
         this.statusCode = statusCode;

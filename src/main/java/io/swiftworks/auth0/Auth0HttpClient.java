@@ -15,6 +15,8 @@ import io.vertx.core.json.JsonObject;
 public class Auth0HttpClient {
     private static final String AUTH0_FORWARDED_FOR = "auth0-forwarded-for";
     private static final String AUTHORIZATION = "Authorization";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String CONTENT_TYPE_JSON = "application/json";
 
     protected final String audience;
     protected final String clientId;
@@ -62,7 +64,7 @@ public class Auth0HttpClient {
 
             String url = this.apiUrl + "/oauth/token";
 
-            HttpClientRequest request = this.httpClient.postAbs(url, buildResponseHandler(handler,"Failed to log in user."));
+            HttpClientRequest request = this.httpClient.postAbs(url, buildJsonResponseHandler(handler,"Failed to log in user."));
 
             request.exceptionHandler(buildExceptionHandler(handler));
 
@@ -78,7 +80,7 @@ public class Auth0HttpClient {
         try {
             String url = this.apiUrl + "/userinfo";
 
-            HttpClientRequest request = this.httpClient.getAbs(url, buildResponseHandler(handler,"Failed to retrieve user profile."));
+            HttpClientRequest request = this.httpClient.getAbs(url, buildJsonResponseHandler(handler,"Failed to retrieve user profile."));
 
             request.exceptionHandler(buildExceptionHandler(handler));
 
@@ -89,21 +91,67 @@ public class Auth0HttpClient {
         }
     }
 
-    private Handler<HttpClientResponse> buildResponseHandler(Handler<AsyncResult<JsonObject>> handler, String errorMessage) {
+    public void sendChangePasswordEmail(String email, String dbConnection, Handler<AsyncResult<String>> handler) {
+        try {
+            JsonObject requestBody = new JsonObject();
+            requestBody.put("client_id", clientId);
+            requestBody.put("email", email);
+            requestBody.put("password", "");
+            requestBody.put("connection", dbConnection);
+
+            String url = this.apiUrl + "/dbconnections/change_password";
+
+            HttpClientRequest request = this.httpClient.getAbs(url, buildStringResponseHandler(handler,"Failed to request password email."));
+
+            request.exceptionHandler(buildExceptionHandler(handler));
+
+            request.putHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
+                    .end();
+        } catch (Throwable t) {
+            handler.handle(Future.failedFuture(new RequestException("Failed to send request", t)));
+        }
+    }
+
+    private Handler<HttpClientResponse> buildStringResponseHandler(Handler<AsyncResult<String>> handler, String errorMessage) {
         return response -> {
             try {
                 response.exceptionHandler(t ->
                         handler.handle(Future.failedFuture(new RequestException(errorMessage, t)))
                 );
 
-                response.bodyHandler(buildBodyHandler(handler, response));
+                response.bodyHandler(buffer -> {
+                    try {
+                        if (response.statusCode() >= 200 && response.statusCode() < 400) {
+                            handler.handle(Future.succeededFuture(buffer.toString()));
+                        } else {
+                            handler.handle(Future.failedFuture(new RequestException(buffer.toString(), response.statusCode())));
+                        }
+
+                    } catch (Throwable t) {
+                        handler.handle(Future.failedFuture(new RequestException("Failed to parse response. Received: '" + (buffer == null ? "null" : buffer.toString()) + "'", t)));
+                    }
+                });
             } catch (Throwable t) {
                 handler.handle(Future.failedFuture(new RequestException(errorMessage + " Error binding request handlers.", t)));
             }
         };
     }
 
-    private Handler<Buffer> buildBodyHandler(Handler<AsyncResult<JsonObject>> handler, HttpClientResponse response) {
+    private Handler<HttpClientResponse> buildJsonResponseHandler(Handler<AsyncResult<JsonObject>> handler, String errorMessage) {
+        return response -> {
+            try {
+                response.exceptionHandler(t ->
+                        handler.handle(Future.failedFuture(new RequestException(errorMessage, t)))
+                );
+
+                response.bodyHandler(buildJsonBodyHandler(handler, response));
+            } catch (Throwable t) {
+                handler.handle(Future.failedFuture(new RequestException(errorMessage + " Error binding request handlers.", t)));
+            }
+        };
+    }
+
+    private Handler<Buffer> buildJsonBodyHandler(Handler<AsyncResult<JsonObject>> handler, HttpClientResponse response) {
         return buffer -> {
             try {
                 JsonObject result;
@@ -125,7 +173,7 @@ public class Auth0HttpClient {
         };
     }
 
-    private Handler<Throwable> buildExceptionHandler(Handler<AsyncResult<JsonObject>> handler) {
+    private <T> Handler<Throwable> buildExceptionHandler(Handler<AsyncResult<T>> handler) {
         return t -> handler.handle(Future.failedFuture(new RequestException("Failed to connect to server", t)));
     }
 }
