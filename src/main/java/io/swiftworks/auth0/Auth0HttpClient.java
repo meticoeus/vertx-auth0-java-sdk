@@ -101,7 +101,7 @@ public class Auth0HttpClient {
 
             String url = this.apiUrl + "/dbconnections/change_password";
 
-            HttpClientRequest request = this.httpClient.getAbs(url, buildStringResponseHandler(handler,"Failed to request password email."));
+            HttpClientRequest request = this.httpClient.postAbs(url, buildStringResponseHandler(handler,"Failed to request password email."));
 
             request.exceptionHandler(buildExceptionHandler(handler));
 
