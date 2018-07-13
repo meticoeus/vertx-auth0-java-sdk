@@ -168,6 +168,7 @@ public class Auth0HttpClient {
             request.exceptionHandler(buildExceptionHandler(handler));
 
             request.putHeader(AUTHORIZATION, "Bearer " + managementApiCredentials.getAccessToken())
+                    .putHeader("content-type", "application/json")
                     .end(requestBody.toString());
         } catch (Throwable t) {
             handler.handle(Future.failedFuture(new RequestException("Failed to send request", t)));
