@@ -252,7 +252,7 @@ public class Auth0HttpClient {
                     if (result.succeeded()) {
                         JsonObject authData = result.result();
                         Long expiresAt = null;
-                        Long expiresIn = authData.getLong("expires_in");
+                        Long expiresIn = authData.getLong("expiresIn");
                         if (expiresIn == null) {
                             // use the default 24hr expiration
                             expiresAt = new Date().getTime() + 24L * 60L * 60L * 1000L;
@@ -260,7 +260,7 @@ public class Auth0HttpClient {
                             expiresAt = new Date().getTime() + expiresIn;
                         }
 
-                        this.managementApiCredentials = new ManagementApiCredentials(authData.getString("access_token"), expiresAt);
+                        this.managementApiCredentials = new ManagementApiCredentials(authData.getString("accessToken"), expiresAt);
 
                         handler.handle(Future.succeededFuture(this.managementApiCredentials));
 
