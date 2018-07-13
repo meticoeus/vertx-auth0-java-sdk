@@ -16,4 +16,10 @@ public class JsonUtils {
 
         return output;
     }
+
+    public static <T> void addIfNotNull(JsonObject o, String prop, T value) {
+        if (value != null) {
+            o.put(prop, o);
+        }
+    }
 }
