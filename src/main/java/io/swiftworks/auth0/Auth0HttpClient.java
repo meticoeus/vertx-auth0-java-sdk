@@ -15,6 +15,10 @@ import java.util.Date;
 
 @SuppressWarnings("WeakerAccess")
 public class Auth0HttpClient {
+    public static final String GRANT_CLIENT_CREDENTIALS = "client_credentials";
+    public static final String GRANT_PASSWORD = "password";
+    public static final String GRANT_REFRESH_TOKEN = "refresh_token";
+
     private static final String AUTH0_FORWARDED_FOR = "auth0-forwarded-for";
     private static final String AUTHORIZATION = "Authorization";
     private static final String CONTENT_TYPE = "Content-Type";
@@ -57,7 +61,7 @@ public class Auth0HttpClient {
     public void getManagementToken(Handler<AsyncResult<JsonObject>> handler) {
         try {
             JsonObject requestBody = new JsonObject();
-            requestBody.put("grant_type", "client_credentials");
+            requestBody.put("grant_type", GRANT_CLIENT_CREDENTIALS);
             requestBody.put("audience", apiUrl + "/api/v2/");
             requestBody.put("client_id", clientId);
             requestBody.put("client_secret", clientSecret);
@@ -71,7 +75,7 @@ public class Auth0HttpClient {
     public void loginUser(LoginUserRequest loginUserRequest, Handler<AsyncResult<JsonObject>> handler) {
         try {
             JsonObject requestBody = new JsonObject();
-            requestBody.put("grant_type", "password");
+            requestBody.put("grant_type", GRANT_PASSWORD);
             requestBody.put("username", loginUserRequest.getUsername());
             requestBody.put("password", loginUserRequest.getPassword());
             requestBody.put("audience", audience);
@@ -88,7 +92,7 @@ public class Auth0HttpClient {
     public void refreshLogin(String refreshToken, Handler<AsyncResult<JsonObject>> handler) {
         try {
             JsonObject requestBody = new JsonObject();
-            requestBody.put("grant_type", "refresh_token");
+            requestBody.put("grant_type", GRANT_REFRESH_TOKEN);
             requestBody.put("refresh_token", refreshToken);
             requestBody.put("client_id", clientId);
             requestBody.put("client_secret", clientSecret);
