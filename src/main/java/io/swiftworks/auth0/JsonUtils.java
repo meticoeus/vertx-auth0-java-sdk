@@ -19,7 +19,7 @@ public class JsonUtils {
 
     public static <T> void addIfNotNull(JsonObject o, String prop, T value) {
         if (value != null) {
-            o.put(prop, o);
+            o.put(prop, value);
         }
     }
 }

@@ -257,7 +257,7 @@ public class Auth0HttpClient {
                             // use the default 24hr expiration
                             expiresAt = new Date().getTime() + 24L * 60L * 60L * 1000L;
                         } else {
-                            expiresAt = new Date().getTime() + expiresIn;
+                            expiresAt = new Date().getTime() + expiresIn * 1000L; // API returns seconds
                         }
 
                         this.managementApiCredentials = new ManagementApiCredentials(authData.getString("accessToken"), expiresAt);
